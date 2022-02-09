@@ -107,7 +107,7 @@ static int s2n_low_level_hash_init(struct s2n_hash_state *state, s2n_hash_algori
         POSIX_GUARD_OSSL(MD5_Init(&state->digest.low_level.md5), S2N_ERR_HASH_INIT_FAILED);
         break;
     case S2N_HASH_SHA1:
-        POSIX_GUARD_OSSL(SHA1_Init(&state->digest.low_level.sha1), S2N_ERR_HASH_INIT_FAILED);
+        POSIX_GUARD_OSSL(SHA1_Init_AWS(&state->digest.low_level.sha1), S2N_ERR_HASH_INIT_FAILED);
         break;
     case S2N_HASH_SHA224:
         POSIX_GUARD_OSSL(SHA224_Init(&state->digest.low_level.sha224), S2N_ERR_HASH_INIT_FAILED);
@@ -122,7 +122,7 @@ static int s2n_low_level_hash_init(struct s2n_hash_state *state, s2n_hash_algori
         POSIX_GUARD_OSSL(SHA512_Init(&state->digest.low_level.sha512), S2N_ERR_HASH_INIT_FAILED);
         break;
     case S2N_HASH_MD5_SHA1:
-        POSIX_GUARD_OSSL(SHA1_Init(&state->digest.low_level.md5_sha1.sha1), S2N_ERR_HASH_INIT_FAILED);;
+        POSIX_GUARD_OSSL(SHA1_Init_AWS(&state->digest.low_level.md5_sha1.sha1), S2N_ERR_HASH_INIT_FAILED);;
         POSIX_GUARD_OSSL(MD5_Init(&state->digest.low_level.md5_sha1.md5), S2N_ERR_HASH_INIT_FAILED);;
         break;
 
@@ -148,7 +148,7 @@ static int s2n_low_level_hash_update(struct s2n_hash_state *state, const void *d
         POSIX_GUARD_OSSL(MD5_Update(&state->digest.low_level.md5, data, size), S2N_ERR_HASH_UPDATE_FAILED);
         break;
     case S2N_HASH_SHA1:
-        POSIX_GUARD_OSSL(SHA1_Update(&state->digest.low_level.sha1, data, size), S2N_ERR_HASH_UPDATE_FAILED);
+        POSIX_GUARD_OSSL(SHA1_Update_AWS(&state->digest.low_level.sha1, data, size), S2N_ERR_HASH_UPDATE_FAILED);
         break;
     case S2N_HASH_SHA224:
         POSIX_GUARD_OSSL(SHA224_Update(&state->digest.low_level.sha224, data, size), S2N_ERR_HASH_UPDATE_FAILED);
@@ -163,7 +163,7 @@ static int s2n_low_level_hash_update(struct s2n_hash_state *state, const void *d
         POSIX_GUARD_OSSL(SHA512_Update(&state->digest.low_level.sha512, data, size), S2N_ERR_HASH_UPDATE_FAILED);
         break;
     case S2N_HASH_MD5_SHA1:
-        POSIX_GUARD_OSSL(SHA1_Update(&state->digest.low_level.md5_sha1.sha1, data, size), S2N_ERR_HASH_UPDATE_FAILED);
+        POSIX_GUARD_OSSL(SHA1_Update_AWS(&state->digest.low_level.md5_sha1.sha1, data, size), S2N_ERR_HASH_UPDATE_FAILED);
         POSIX_GUARD_OSSL(MD5_Update(&state->digest.low_level.md5_sha1.md5, data, size), S2N_ERR_HASH_UPDATE_FAILED);
         break;
     default:
@@ -189,7 +189,7 @@ static int s2n_low_level_hash_digest(struct s2n_hash_state *state, void *out, ui
         break;
     case S2N_HASH_SHA1:
         POSIX_ENSURE_EQ(size, SHA_DIGEST_LENGTH);
-        POSIX_GUARD_OSSL(SHA1_Final(out, &state->digest.low_level.sha1), S2N_ERR_HASH_DIGEST_FAILED);
+        POSIX_GUARD_OSSL(SHA1_Final_AWS(out, &state->digest.low_level.sha1), S2N_ERR_HASH_DIGEST_FAILED);
         break;
     case S2N_HASH_SHA224:
         POSIX_ENSURE_EQ(size, SHA224_DIGEST_LENGTH);
@@ -209,7 +209,7 @@ static int s2n_low_level_hash_digest(struct s2n_hash_state *state, void *out, ui
         break;
     case S2N_HASH_MD5_SHA1:
         POSIX_ENSURE_EQ(size, MD5_DIGEST_LENGTH + SHA_DIGEST_LENGTH);
-        POSIX_GUARD_OSSL(SHA1_Final(((uint8_t *) out) + MD5_DIGEST_LENGTH, &state->digest.low_level.md5_sha1.sha1), S2N_ERR_HASH_DIGEST_FAILED);
+        POSIX_GUARD_OSSL(SHA1_Final_AWS(((uint8_t *) out) + MD5_DIGEST_LENGTH, &state->digest.low_level.md5_sha1.sha1), S2N_ERR_HASH_DIGEST_FAILED);
         POSIX_GUARD_OSSL(MD5_Final(out, &state->digest.low_level.md5_sha1.md5), S2N_ERR_HASH_DIGEST_FAILED);
         break;
     default:
